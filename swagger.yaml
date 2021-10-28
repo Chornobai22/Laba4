@@ -1,3 +1,4 @@
+
 openapi: 3.0.1
 info:
   title: Лабораторна робота варіант 12
@@ -541,6 +542,8 @@ components:
         password:
           type: string
           format: password
+        accessusers:
+          type: string
           
     Student:
       required:
@@ -569,10 +572,10 @@ components:
       required:
         - id
         - title
-        - students
+        - students_id
         - accessusers
-        - visibleto
-        
+
+        - accessus
       type: object
       properties:
         id:
@@ -580,19 +583,12 @@ components:
           format: int64
         title:
           type: string
-        students:
-          type: array
-          items:
-            $ref: '#/components/schemas/Student'
-        id_accessusers:
-          type: array
-          items:
-           type: integer
+        students_id:
+          type: integer
+          format: int64
+        accessus:
+           type: string
             
-        id_visibleTo:
-          type: array
-          items:
-           type: integer
       
               
             
