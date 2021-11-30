@@ -1,10 +1,9 @@
 from marshmallow import Schema, fields, validate, post_load
 
-from models import User, Student, Rating, Properties
+from models import User, Student, Rating
 
 
 class UserSchema(Schema):
-
     id = fields.Integer()
     name = fields.Str(validate=validate.Length(max=45), nullable=False)
     surname = fields.Str(validate=validate.Length(max=45), nullable=False)
@@ -23,6 +22,7 @@ class StudentSchema(Schema):
     surname = fields.Str(validate=validate.Length(max=45), required=True)
     course = fields.Integer(required=True)
     best_grade = fields.Integer(required=True)
+    created = fields.Integer(required=True)
 
     @post_load
     def make_student(self, data, **kwargs):
@@ -33,18 +33,8 @@ class RatingSchema(Schema):
     id = fields.Integer()
     title = fields.Str(validate=validate.Length(max=45), required=True)
     Student_id = fields.Integer(required=True)
-    user_creator_id = fields.Str(validate=validate.Length(max=45), required=True)
+    user_creator_id = fields.Integer(required=True)
 
     @post_load
     def make_rating(self, data, **kwargs):
         return Rating(**data)
-
-
-class PropertiesSchema(Schema):
-    id = fields.Integer()
-    user_id = fields.Integer(required=True)
-    rating_id  = fields.Integer(required=True)
-
-    @post_load
-    def make_properties(self, data, **kwargs):
-        return Properties(**data)
