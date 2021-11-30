@@ -1,7 +1,7 @@
 from routes import query
 from check import *
 from flask import Flask
-from config import Config
+from config import *
 from flask_jwt_extended import JWTManager
 from models import TokenBlockList
 

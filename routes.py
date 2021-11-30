@@ -19,7 +19,7 @@ b = Bcrypt()
 @query.route('/rating', methods=['GET'])
 @jwt_required()
 def get_rating():
-    logged_in_user_id = get_jwt_identity()
+
     ratings = s.query(Rating).all()
     if not ratings:
         return {"message": "Ratings could not be found."}, 404
@@ -95,14 +95,17 @@ def update_rating(id):
 @query.route('/rating/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_rating(id):
+    params = request.json
     logged_in_user_id = get_jwt_identity()
-
     rating_update = s.query(Rating).filter(Rating.id == id).first()
     if rating_update.user_creator_id != logged_in_user_id:
         return {'message': 'Access denied'}, 403
     rating = s.query(Rating).filter_by(id=id).first()
     if not rating:
         return {"message": "Rating could not be found."}, 404
+
+    if params['user_creator_id'] != logged_in_user_id:
+        return {"message": "Wrong creator"}, 403
     s.delete(rating)
     s.commit()
     return {"message": "Rating was successfully deleted."}, 200
@@ -115,7 +118,7 @@ def delete_rating(id):
 @query.route('/student', methods=['GET'])
 @jwt_required()
 def get_student():
-    logged_in_user_id = get_jwt_identity()
+
     user = s.query(User).filter(User.id == id).first()
     student = s.query(Student).all()
     if student is None:
@@ -129,7 +132,6 @@ def get_student():
 def add_student():
     logged_in_user_id = get_jwt_identity()
 
-    user = s.query(User).filter(User.id == id).first()
     data = request.json
     if not data:
         return {"message": "Empty request body."}, 400
@@ -152,8 +154,6 @@ def add_student():
 @query.route('/student/grade/<int:best_grade>', methods=['GET'])
 @jwt_required()
 def get_student_by_grade(best_grade):
-    logged_in_user_id = get_jwt_identity()
-
     studentgrade = s.query(Student).filter(Student.best_grade == best_grade)
     if studentgrade is None:
         return {"message": "Student could not be found."}, 404
@@ -164,7 +164,7 @@ def get_student_by_grade(best_grade):
 @query.route('/student/<int:id>', methods=['GET'])
 @jwt_required()
 def get_student_by_id(id):
-    logged_in_user_id = get_jwt_identity()
+
 
     studentid = s.query(Student).filter(Student.id == id).first()
     if studentid is None:
