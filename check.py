@@ -1,17 +1,12 @@
-import os
-import random
-from datetime import datetime
-#from dateutil.relativedelta import relativedelta
-from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import User
 
-engine = create_engine('mysql://root:chornobai2002@localhost:3306/bd')
+engine = create_engine('mysql://ADMIN:Shapochka@127.0.0.1/db_reting')
 connection = engine.connect()
 
-Session = sessionmaker(bind = engine)
-session = Session()
+session = sessionmaker(bind=engine)
+s = session()
+
 
 #for n in range(1, 2):
 #    fv = User(id = n,name = 'Dima', surname = 'Chornobai',
@@ -19,4 +14,4 @@ session = Session()
 #print(f"Adding FV0{n}.")
 #session.add(fv)
 
-session.commit()
+s.commit()
