@@ -4,11 +4,14 @@ from flask import Flask
 from config import *
 from flask_jwt_extended import JWTManager
 from models import TokenBlockList
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.register_blueprint(query)
 app.config.from_object(Config)
-
+CORS(app, origins='*',
+     headers=['Content-Type', 'Authorization'],
+     expose_headers='Authorization')
 jwt = JWTManager(app)
 
 
@@ -19,6 +22,5 @@ def check_if_token_revoked(jwt_header, jwt_payload):
     return token is not None
 
 
-@app.route('/api/v1/hello-world-12')
-def hello_world():
-    return 'Hello world 12'
+if __name__ == '__main__':
+    app.run()

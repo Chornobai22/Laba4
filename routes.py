@@ -229,7 +229,6 @@ def register_user():
         return {"message": "Empty request body."}, 400
     if 'accessusers' not in data:
         return {"message": "You should set a correct property."}, 400
-
     try:
         UserSchema().load(data)
     except ValidationError as err:
@@ -249,17 +248,34 @@ def register_user():
     token = new_user.get_token()
     return {'access_token': token}
 
+from flask_httpauth import HTTPBasicAuth
+auth = HTTPBasicAuth()
+User_array = [ 4 , 5]
+@auth.verify_password
+def verify_password(username, password):
+    user = s.query(User).filter(User.username == username).first()
+    if b.check_password_hash(user.password, password):
+        return (id, 200)
+    else:
+        return ({"message": "wrong password or id"}, 401)
 
+@staticmethod
 @query.route('/login', methods=['POST'])
 def login():
-    params = request.json
-    if not s.query(User).filter_by(username=params['username']).first():
-        return {"message": "User with provided username not found"}, 404
-    user = User.authenticate(**params)
-    if not user:
-        return {'message': 'Invalid password'}, 406
+    info = request.authorization
+    if not info or not info.username or not info.password:
+        return {"message": "mised information"} , 401
+    password = info.password
+    user = s.query(User).filter(User.username == info.username).first()
     token = user.get_token()
-    return {'access_token': token}
+    if not user:
+        return {"message": "User could not be found."}, 404
+    if b.check_password_hash(user.password, password):
+        print(User_array)
+        return {'access_token': token}
+    else:
+        print(User_array)
+        return {"message": "wrong password or id"}, 401
 
 
 @query.route('/logout', methods=['DELETE'])
@@ -273,9 +289,9 @@ def logout():
 
 
 @query.route('/user/<int:id>', methods=['PUT'])
-@jwt_required()
+#@jwt_required()
 def user_update(id):
-    logged_in_user_id = get_jwt_identity()
+    logged_in_user_id = 12
     data = request.json
     schema = UserSchema()
     if 'id' in data:
